@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "extensions": [
+    {
+      "name": "ask_user",
+      "file": "ask_user.csx",
+      "version": 2,
+      "description": "Stops and asks you 1-4 multiple-choice questions when gatto needs a decision it cannot make itself.",
+      "tools": [
+        "ask_user"
+      ],
+      "sha256": "d84cb1e45db1204d0cca81f84b33ddd8594369418b860fd088c0438981191942",
+      "bytes": 6513
+    },
+    {
+      "name": "web_search",
+      "file": "web_search.csx",
+      "version": 2,
+      "description": "Searches the web and fetches pages as readable text. Providers are configured in gatto.json.",
+      "tools": [
+        "web_search",
+        "web_fetch"
+      ],
+      "sha256": "6a80e1c43e24a6d660dde9fbe040bf5cbd07a805dbbae50943f27a16d6d7a516",
+      "bytes": 11835
+    }
+  ]
+}

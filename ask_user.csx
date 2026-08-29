@@ -100,3 +100,7 @@ Gatto.Register(
             answers.Select(a => new { header = a.Header, selected = a.Selected })), Gloss: gloss);
     },
     readClass: true);
+
+//when to reach for this tool, as opposed to how to call it. the description above is the
+//per-call contract; this line is the standing rule, and it leaves with the file.
+Gatto.Policy("When a choice is the user's to make, such as a design direction, a name, or a trade-off, stop and ask with ask_user (2-4 options) instead of choosing for them.");

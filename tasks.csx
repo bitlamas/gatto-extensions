@@ -357,7 +357,10 @@ public static class ArcRules
 public static class GitRun
 {
     //the failure text names which of four causes stopped the run, because one reason for all of them sends the fix to the wrong place
-    public static (string? Output, string Failure) Run(string program, string dir, string? stdin, params string[] args)
+    public static (string? Output, string Failure) Run(string program, string dir, string? stdin, params string[] args) =>
+        RunWithin(30000, program, dir, stdin, args);
+
+    public static (string? Output, string Failure) RunWithin(int timeoutMs, string program, string dir, string? stdin, params string[] args)
     {
         if (!Directory.Exists(dir)) return (null, $"the folder {dir} does not exist");
         var psi = new ProcessStartInfo(program) { RedirectStandardOutput = true, RedirectStandardError = true, RedirectStandardInput = stdin is not null, UseShellExecute = false, CreateNoWindow = true };
@@ -384,10 +387,10 @@ public static class GitRun
             }
             var error = p.StandardError.ReadToEndAsync();
             var output = p.StandardOutput.ReadToEndAsync();
-            if (!p.WaitForExit(30000))
+            if (!p.WaitForExit(timeoutMs))
             {
                 p.Kill(true);
-                return (null, $"{program} ran past 30 seconds in {dir}");
+                return (null, $"{program} ran past {timeoutMs / 1000.0:0.#} seconds in {dir}");
             }
             var firstError = error.Result.Split('\n').Select(l => l.Trim()).FirstOrDefault(l => l.Length > 0) ?? "no message";
             return p.ExitCode == 0 ? (output.Result.Trim(), "") : (null, $"{program} exited {p.ExitCode} in {dir}: {firstError}");
@@ -889,16 +892,22 @@ public static class Store
     }
 
     //a deleted task file frees no id, because a letter may already cite it, so the next id also passes every name git ever recorded here
-    static IEnumerable<string> HistoricalNames(string tasksDir)
+    static (List<string>? Names, string Failure) HistoricalNames(string tasksDir, string git)
     {
-        var (output, _) = GitRun.Run("git", tasksDir, null, "log", "--all", "--format=", "--name-only", "--", ".");
-        return output is null ? [] : output.Split('\n').Select(line => Path.GetFileName(line.Trim()));
+        var (output, failure) = GitRun.Run(git, tasksDir, null, "log", "--all", "--format=", "--name-only", "--", ".");
+        if (output is not null) return (output.Split('\n').Select(line => Path.GetFileName(line.Trim())).ToList(), "");
+        return NoHistory(failure) ? ([], "") : (null, failure);
     }
 
-    public static (string? Id, string? Error) Create(string tasksDir, Item item, Action<string>? beforeCreate)
+    //a store with no git, or outside any repository, has no history to pass. any other git failure could hide a recorded id, so it refuses the add
+    internal static bool NoHistory(string failure) =>
+        failure.Contains(" could not start", StringComparison.Ordinal) || failure.Contains("not a git repository", StringComparison.OrdinalIgnoreCase);
+
+    public static (string? Id, string? Error) Create(string tasksDir, Item item, Action<string>? beforeCreate, string git = "git")
     {
         Directory.CreateDirectory(tasksDir);
-        var history = HistoricalNames(tasksDir).ToList();
+        var (history, failure) = HistoricalNames(tasksDir, git);
+        if (history is null) return (null, "git could not read the ids already recorded under tasks, so the next id is unknown: " + failure);
         for (var attempt = 0; attempt < 2; attempt++)
         {
             var number = Directory.EnumerateFiles(tasksDir, "*.md").Select(Path.GetFileName).Concat(history)

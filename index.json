@@ -4,13 +4,13 @@
     {
       "name": "ask_user",
       "file": "ask_user.csx",
-      "version": 3,
+      "version": 4,
       "description": "Stops and asks you 1-4 multiple-choice questions when gatto needs a decision it cannot make itself.",
       "tools": [
         "ask_user"
       ],
-      "sha256": "948c8a996ba36c1257d04133ae25dfd820f6cfa6997c092fdb14830b53d13212",
-      "bytes": 6867
+      "sha256": "a47f03a16e3965851cda990a2a2474510f39a89111e056e3a68e8d5deccd9bd2",
+      "bytes": 6866
     },
     {
       "name": "web_search",

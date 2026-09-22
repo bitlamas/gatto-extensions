@@ -5,7 +5,7 @@ using System.Text.Json;
 using Gatto.Core.Tools;
 //aliased because `Gatto` is bound as the script host object, so the full type name parses
 //as member access on it and fails to compile. a using directive resolves as a namespace.
-using Cells = Gatto.Repl.Term.UnicodeWidth;
+using Cells = Gatto.Terminal.UnicodeWidth;
 
 //cap a string to at most `max` display cells, walking runes, not a substring.
 //a terminal counts cells: one CJK character is one UTF-16 unit but two cells, so a

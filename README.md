@@ -47,8 +47,8 @@ Restart gatto. That is the whole install.
 > each file's path before its bytes, so identical script text hashes differently:
 >
 > ```
-> ask_user.csx  ->  b07b989999757448219958fa71d5d913abb97340daef614812aa6fd7e7e8203a
-> main.csx      ->  2a9f881c3da3b71f627dc083f2affc9d96780b9aa75289884e0dae9ad41d559d
+> ask_user.csx  ->  f8a8110df3bbc9dd4535cee47d75c70a1899815e64ee1b87334a84505efdeb6b
+> main.csx      ->  ae8ca1439ad533e48824bfd9fd1762dce96283184c51fae6fb108654e2695362
 > ```
 >
 > Only the flat form matches the hash compiled into gatto, and only a matching hash is vetted.

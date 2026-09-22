@@ -23,6 +23,19 @@
       ],
       "sha256": "6a80e1c43e24a6d660dde9fbe040bf5cbd07a805dbbae50943f27a16d6d7a516",
       "bytes": 11835
+    },
+    {
+      "name": "tasks",
+      "file": "tasks.csx",
+      "version": 1,
+      "description": "Reads and writes the task store of the project gatto opened, through the store's own rules.",
+      "tools": [
+        "task_read",
+        "task_write"
+      ],
+      "vetted": false,
+      "sha256": "dec7e5631b0b5db79e702722262b1e35630b1db1829352dd0cf5dbecbeaf251c",
+      "bytes": 55145
     }
   ]
 }

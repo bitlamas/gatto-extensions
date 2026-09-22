@@ -24,9 +24,28 @@ Copyright (C) 2026 bitlamas
 |---|---|---|
 | `ask_user.csx` | `ask_user` | Stops and asks you 1 to 4 multiple-choice questions when gatto needs a decision it cannot make itself. |
 | `web_search.csx` | `web_search`, `web_fetch` | Searches the web and fetches pages as readable text. Providers are configured in `gatto.json`. |
+| `tasks.csx` | `task_read`, `task_write` | Reads and writes the task store of the project gatto opened, through the store's own rules. |
 
 These two also ship **inside** gatto. That is not duplication; see *byte identity* below, which is
 the reason this repository exists in the shape it does.
+
+`tasks.csx` does not ship inside gatto. It is opt-in: you install it yourself, and it is not
+vetted, so `task_write` asks for permission before it writes, and `task_read` asks too. The
+script asks for the read class on `task_read`. That request does nothing until the file is vetted,
+and it stays in the script so a vetted copy needs no edit.
+
+It works on a task store: a folder that holds a `tasks` folder and an `arc.js` file, found by
+walking up from the folder gatto opened. A folder with no store above it gets one sentence back
+from both tools, and both tools stay registered, so the tool list does not change from one
+folder to the next. The session writes as one seat of the store. Set it in `gatto.json`:
+
+```json
+{ "extensions": { "tasks": { "owner": "gatto" } } }
+```
+
+The seat defaults to `gatto`, and the store's `seats.md` must declare it. gatto 0.5.2 and earlier
+refuse the `extensions` key at startup, so on those versions leave it out and the seat is `gatto`.
+Adding an item runs one `git log` in the store's `tasks` folder, so a deleted item's id is not reused.
 
 ---
 
@@ -85,6 +104,7 @@ The catalogue. It is the file consumers read; the repository layout is not an AP
 | `version` | integer, bumped whenever `file` changes. A reader can compare it without hashing. |
 | `description` | one line, written for a human reading a list. The model-facing description lives in the script's own `Gatto.Register` call and is deliberately not copied here. |
 | `tools` | every tool name the script registers. Usually one; `web_search.csx` registers two, which is why this is a list. |
+| `vetted` | optional, and absent means `true`. `false` marks a file gatto does not ship: it loads unvetted, so its tools ask for permission. A file gatto ships is never `false`. |
 | `sha256` | plain SHA-256 of the file's bytes, so a download can be checked with any tool. **Not** gatto's vetting hash: that one folds newlines out and mixes in the path. Use this to check the file arrived intact, not to predict whether it will be vetted. |
 | `bytes` | the file's size, as a second cheap integrity signal. |
 

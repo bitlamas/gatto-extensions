@@ -27,7 +27,7 @@
     {
       "name": "undo",
       "file": "undo.csx",
-      "version": 1,
+      "version": 2,
       "description": "Snapshots a file before every write the tools make, and /undo puts one back.",
       "tools": [],
       "sha256": "980d2e0c1d8516d9144127d84e5d5a1432cbde6f6913f8418b950df7fc0b45c8",

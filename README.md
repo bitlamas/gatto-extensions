@@ -19,6 +19,7 @@ Copyright (C) 2026 bitlamas
 |---|---|---|---|
 | `ask_user.csx` | `ask_user` | bundled, vetted | Asks 1 to 4 multiple-choice questions when gatto needs a decision. |
 | `web_search.csx` | `web_search`, `web_fetch` | bundled, vetted | Searches the web and fetches pages as text. Providers: `gatto.json`. |
+| `undo.csx` | none, registers `/undo` | bundled, vetted | Snapshots a file before every write the tools make; `/undo` lists them and puts one back. |
 | `tasks.csx` | `task_read`, `task_write` | opt-in, not vetted | Reads and writes a task store through the store's own rules. |
 
 ## Classes
@@ -50,6 +51,30 @@ main.csx      ->  ae8ca1439ad533e48824bfd9fd1762dce96283184c51fae6fb108654e26953
 | gatto 0.5.2 and earlier | refuse the `extensions` key; leave it out; seat is `gatto` |
 | `task_write` add | runs one `git log` in the store's `tasks\` folder, so a deleted id is never reused |
 | read class | requested in the script; inert until the file is vetted |
+
+## `undo.csx`
+
+| item | value |
+|---|---|
+| snapshots | before `write_file`, `edit_file`, and a shell command that writes, deletes, renames or moves a file it names |
+| where | `~\.gatto\undo\<start>-<pid>\`: one `index.jsonl` and one copy per snapshot |
+| caps | 500 snapshots and 200 MB in all, 50 MB per file; a running session keeps its newest 10 |
+| `/undo` | lists the 10 newest snapshots under the folder gatto opened, from every session |
+| `/undo <n>`, `/undo <path>` | puts that file back, after taking a snapshot of what it replaces |
+| off | delete the file |
+
+Not snapshotted:
+
+- A folder: `Remove-Item -Recurse` on one, `Copy-Item -Recurse` onto one.
+- git's own writes: `checkout --`, `restore`, `reset --hard`, `clean`.
+- A path built at run time: `$target`, `(Join-Path a b)`.
+- A wildcard: `Remove-Item *.tmp`. Name the file instead.
+- A file above 50 MB. A restore over such a file cannot itself be undone.
+- `New-Item -Path <folder> -Name <file>`.
+- A switch undo does not know takes the next word as its value: `Remove-Item -rf a.txt` and `rm -r -fo a.txt` snapshot nothing.
+- A redirect after a stream join in the same statement: `echo x >&2 > a.txt`.
+- A write by a `run_agent` child, or by a program the shell starts: `cmd /c del a.txt`, a Python script.
+- A `>` inside a quoted string reads as a redirect: `Write-Output "a > b"` records a row for `b"` that restores nothing.
 
 ## `index.json`
 

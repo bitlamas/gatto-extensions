@@ -25,6 +25,15 @@
       "bytes": 11835
     },
     {
+      "name": "undo",
+      "file": "undo.csx",
+      "version": 1,
+      "description": "Snapshots a file before every write the tools make, and /undo puts one back.",
+      "tools": [],
+      "sha256": "64d46147ea999c4584c9bc149ebfcf6f11ee61cdd70617689ee708e1da916c09",
+      "bytes": 28553
+    },
+    {
       "name": "tasks",
       "file": "tasks.csx",
       "version": 2,

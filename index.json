@@ -30,8 +30,8 @@
       "version": 1,
       "description": "Snapshots a file before every write the tools make, and /undo puts one back.",
       "tools": [],
-      "sha256": "64d46147ea999c4584c9bc149ebfcf6f11ee61cdd70617689ee708e1da916c09",
-      "bytes": 28553
+      "sha256": "980d2e0c1d8516d9144127d84e5d5a1432cbde6f6913f8418b950df7fc0b45c8",
+      "bytes": 29118
     },
     {
       "name": "cards",

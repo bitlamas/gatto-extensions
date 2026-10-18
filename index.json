@@ -34,6 +34,15 @@
       "bytes": 28553
     },
     {
+      "name": "cards",
+      "file": "cards.csx",
+      "version": 1,
+      "description": "Writes a role file from a Character Card V2 or V3, and /card <path> runs it.",
+      "tools": [],
+      "sha256": "a36da9665ec57b7b39923e0f19d5f5f5dd8fc13f942f9c286f653fa9f982f8fb",
+      "bytes": 8795
+    },
+    {
       "name": "tasks",
       "file": "tasks.csx",
       "version": 2,

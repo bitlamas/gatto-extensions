@@ -20,6 +20,7 @@ Copyright (C) 2026 bitlamas
 | `ask_user.csx` | `ask_user` | bundled, vetted | Asks 1 to 4 multiple-choice questions when gatto needs a decision. |
 | `web_search.csx` | `web_search`, `web_fetch` | bundled, vetted | Searches the web and fetches pages as text. Providers: `gatto.json`. |
 | `undo.csx` | none, registers `/undo` | bundled, vetted | Snapshots a file before every write the tools make; `/undo` lists them and puts one back. |
+| `cards.csx` | none, registers `/card` | bundled, vetted | Writes a role file from a Character Card V2 or V3 (PNG or JSON). |
 | `tasks.csx` | `task_read`, `task_write` | opt-in, not vetted | Reads and writes a task store through the store's own rules. |
 
 ## Classes
@@ -75,6 +76,18 @@ Not snapshotted:
 - A redirect after a stream join in the same statement: `echo x >&2 > a.txt`.
 - A write by a `run_agent` child, or by a program the shell starts: `cmd /c del a.txt`, a Python script.
 - A `>` inside a quoted string reads as a redirect: `Write-Output "a > b"` records a row for `b"` that restores nothing.
+
+## `cards.csx`
+
+| item | value |
+|---|---|
+| reads | a `tEXt` chunk named `ccv3`, else `chara`, or a `.json` file; `spec` must be `chara_card_v2` or `chara_card_v3` |
+| writes | `~\.gatto\roles\<name>.json`: `raw: true`, `append`, `first_message`; never overwrites |
+| `append` | `system_prompt`, `description`, `personality`, `scenario`, the constant lorebook entries by `insertion_order`, `mes_example`; `{{char}}` and `{{user}}` replaced |
+| dropped | keyword-triggered and disabled lorebook entries, `post_history_instructions`, `alternate_greetings`, the picture, a `first_mes` holding a control token |
+| not read | V1 cards, `zTXt` and `iTXt` chunks, a cat, a colour |
+| names | a role named like a gatto command, `doctor` for one, launches by `/role <name>` and not by `gatto <name>` |
+| off | delete the file |
 
 ## `index.json`
 

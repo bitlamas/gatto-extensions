@@ -71,7 +71,7 @@ Not snapshotted:
 - A path built at run time: `$target`, `(Join-Path a b)`.
 - A wildcard: `Remove-Item *.tmp`. Name the file instead.
 - A file above 50 MB. A restore over such a file cannot itself be undone.
-- A file outside the folder gatto opened, `~\.gatto\` included. One line names it, once a session.
+- A file outside the folder gatto opened, `~\.gatto\` included.
 - `New-Item -Path <folder> -Name <file>`.
 - A switch undo does not know takes the next word as its value: `Remove-Item -rf a.txt` and `rm -r -fo a.txt` snapshot nothing.
 - A redirect after a stream join in the same statement: `echo x >&2 > a.txt`.

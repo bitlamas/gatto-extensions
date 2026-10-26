@@ -485,10 +485,24 @@ public static class Queries
         if (f.Tag is { } tag) rows = rows.Where(i => i.Tags.Contains(tag));
 
         var sep = " " + Tracker.Dot + " ";
+        var shown = 0;
         foreach (var i in rows.OrderBy(Rank).ThenBy(i => i["created"] ?? "", StringComparer.Ordinal).ThenBy(i => i.Id, StringComparer.Ordinal))
+        {
             o.WriteLine(string.Join(sep, i.Id, i["priority"] ?? "-", i["size"] ?? "-", i["owner"] ?? "-", i["bucket"] ?? "-", i["wave"] ?? "-", i["title"] ?? "-"));
+            shown++;
+        }
+        if (shown == 0) o.WriteLine(NoMatch(f));
         if (problems.Count > 0) o.WriteLine($"the store holds {problems.Count} violation(s), so run check");
         return o.ToString();
+    }
+
+    //an empty answer names what was asked, so a reader can tell no match from a read that failed
+    static string NoMatch(ListFilter f)
+    {
+        var asked = new[] { ("priority", f.Priority), ("bucket", f.Bucket), ("wave", f.Wave), ("owner", f.Owner), ("tag", f.Tag) }
+            .Where(p => p.Item2 is not null).Select(p => $"{p.Item1} {p.Item2}").ToList();
+        var what = f.State switch { "open" => "open items", "done" => "done items", _ => "items" };
+        return asked.Count == 0 ? $"no {what}" : $"no {what} with {string.Join(", ", asked)}";
     }
 
     public static string Mine(string root, string seat) => List(root, new ListFilter(null, null, null, seat, null, "open"));
@@ -499,6 +513,7 @@ public static class Queries
         var o = Text();
         var (seats, present) = Seats.Load(root);
         if (!present) { o.WriteLine("no seats.md; seat add <name> \"<line>\" declares the first seat"); return o.ToString(); }
+        if (seats.Count == 0) { o.WriteLine("seats.md declares no seat"); return o.ToString(); }
         var (items, _) = Store.Load(root);
         foreach (var s in seats)
             o.WriteLine($"{items.Count(i => i.IsOpen && (i["owner"] ?? "").Split('+').Contains(s.Name)),4} {s.Name}: {s.Line}");
@@ -521,7 +536,9 @@ public static class Queries
     {
         var o = Text();
         var (items, _) = Store.Load(root);
-        foreach (var g in items.SelectMany(i => i.Tags).GroupBy(t => t, StringComparer.Ordinal).OrderByDescending(g => g.Count()).ThenBy(g => g.Key, StringComparer.Ordinal))
+        var groups = items.SelectMany(i => i.Tags).GroupBy(t => t, StringComparer.Ordinal).OrderByDescending(g => g.Count()).ThenBy(g => g.Key, StringComparer.Ordinal).ToList();
+        if (groups.Count == 0) o.WriteLine("no item carries a tag");
+        foreach (var g in groups)
             o.WriteLine($"{g.Count(),4} {g.Key}");
         return o.ToString();
     }

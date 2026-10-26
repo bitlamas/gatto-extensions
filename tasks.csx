@@ -225,6 +225,18 @@ public static class ArcRules
                 if (!IsString(b["meaning"])) yield return $"{at}: meaning is not a string";
             }
         }
+        //a milestone is a title and a desc, and its place in the array is its order
+        if (d.ContainsKey("milestones") && d["milestones"] is not JsonArray) yield return "milestones is present but not an array";
+        if (d["milestones"] is JsonArray milestones)
+        {
+            for (var i = 0; i < milestones.Count; i++)
+            {
+                var m = Obj(milestones[i]);
+                var at = $"milestones[{i}] ({Text(m, "title")})";
+                if (!IsString(m["title"])) yield return $"{at}: title is not a string";
+                if (!IsString(m["desc"])) yield return $"{at}: desc is not a string";
+            }
+        }
     }
 
     static IEnumerable<string> R1(Ctx c)
@@ -514,7 +526,7 @@ public static class Queries
         return o.ToString();
     }
 
-    //a seat reads this at session start in place of roadmap.js, which renders every item for a browser and costs a context window to open
+    //the short read of where the store stands, in place of roadmap.js, which renders every item for a browser and costs a context window to open
     public static string Position(string root)
     {
         var o = Text();
@@ -891,7 +903,7 @@ public static class Store
         return (path, item, none.Concat(problems).ToList());
     }
 
-    //a deleted task file frees no id, because a letter may already cite it, so the next id also passes every name git ever recorded here
+    //a deleted task file frees no id, because a note or a commit may already cite it, so the next id also passes every name git ever recorded here
     static (List<string>? Names, string Failure) HistoricalNames(string tasksDir, string git)
     {
         var (output, failure) = GitRun.Run(git, tasksDir, null, "log", "--all", "--format=", "--name-only", "--", ".");
@@ -941,7 +953,7 @@ public static class Tracker
 {
     public const int NowCap = 5;
     public const char CR = (char)13;
-    public static readonly string[] KeyOrder = ["id", "title", "state", "priority", "size", "owner", "bucket", "wave", "trigger", "tags", "created", "done", "source"];
+    public static readonly string[] KeyOrder = ["id", "title", "state", "priority", "size", "owner", "bucket", "wave", "trigger", "tags", "created", "done", "source", "branch", "walked", "approved-rc", "approved-master", "approved-extensions"];
     public static readonly string[] Required = ["id", "title", "state", "size", "owner", "created"];
     public static readonly string[] OpenBuckets = ["ready", "word", "trigger", "plan", "design"];
     public static readonly string[] States = ["open", "done"];

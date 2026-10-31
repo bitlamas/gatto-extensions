@@ -27,11 +27,11 @@
     {
       "name": "undo",
       "file": "undo.csx",
-      "version": 3,
+      "version": 4,
       "description": "Snapshots a file before every write the tools make, and /undo puts one back.",
       "tools": [],
-      "sha256": "91624fe701dd4debe6cf13eaf7f1c9076dcb7d9ec99d36ed8a5de0b256e95ecf",
-      "bytes": 28702
+      "sha256": "0f57ad240e70a67a97c586f0aa1faafd9e48d9368da650aa507798ed7e029e99",
+      "bytes": 29931
     },
     {
       "name": "cards",

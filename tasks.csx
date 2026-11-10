@@ -225,7 +225,7 @@ public static class ArcRules
                 if (!IsString(b["meaning"])) yield return $"{at}: meaning is not a string";
             }
         }
-        //a milestone is a title and a desc, and its place in the array is its order
+        //a milestone is a title, a desc unless it is done, and an optional state; its place in the array is its order
         if (d.ContainsKey("milestones") && d["milestones"] is not JsonArray) yield return "milestones is present but not an array";
         if (d["milestones"] is JsonArray milestones)
         {
@@ -234,7 +234,8 @@ public static class ArcRules
                 var m = Obj(milestones[i]);
                 var at = $"milestones[{i}] ({Text(m, "title")})";
                 if (!IsString(m["title"])) yield return $"{at}: title is not a string";
-                if (!IsString(m["desc"])) yield return $"{at}: desc is not a string";
+                if (m.ContainsKey("state") && State(m) is not ("done" or "active")) yield return $"{at}: state is neither done nor active";
+                if (!IsString(m["desc"]) && (State(m) != "done" || m.ContainsKey("desc"))) yield return $"{at}: desc is not a string";
             }
         }
     }
@@ -1061,11 +1062,7 @@ public static class Writes
 //no helper here may share a name with a store type, because a script nests every type beside these functions and the names collide
 string StoreDir() => StoreRoot.Locate(Gatto.Cwd) ?? "";
 string Missing() => string.Format(StoreRoot.NotFound, Gatto.Cwd);
-string SessionSeat()
-{
-    var s = Gatto.Config.Section("tasks");
-    return s is { } el && el.ValueKind == JsonValueKind.Object && el.TryGetProperty("owner", out var v) && v.ValueKind == JsonValueKind.String ? v.GetString()! : "gatto";
-}
+string SessionSeat() => Settings.Get<string>("owner") ?? "gatto";
 var seat = SessionSeat();
 var loadRoot = StoreDir();
 var seatMissing = loadRoot.Length > 0 && !Seats.Load(loadRoot).List.Any(x => x.Name == seat)

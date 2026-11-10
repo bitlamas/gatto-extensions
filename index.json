@@ -45,15 +45,15 @@
     {
       "name": "tasks",
       "file": "tasks.csx",
-      "version": 4,
+      "version": 5,
       "description": "Reads and writes the task store of the project gatto opened, through the store's own rules.",
       "tools": [
         "task_read",
         "task_write"
       ],
       "vetted": false,
-      "sha256": "a395f8fc62f9aad33eef583ec8e72892181103e8a003d7fffc0b3a4ee7195185",
-      "bytes": 57644
+      "sha256": "9f8056317b9e23d6c0ef97412b4ab7962ef9ee8a557856ce516e0e9915bae540",
+      "bytes": 57694
     }
   ]
 }

@@ -48,8 +48,8 @@ main.csx      ->  ae8ca1439ad533e48824bfd9fd1762dce96283184c51fae6fb108654e26953
 |---|---|
 | store | a folder holding `tasks\` and `arc.js`, found by walking up from the folder gatto opened |
 | no store above | both tools return one sentence; both stay registered |
-| seat | `gatto.json`: `{ "extensions": { "tasks": { "owner": "<seat>" } } }`; default `gatto`; must be declared in the store's `seats.md` |
-| gatto 0.5.2 and earlier | refuse the `extensions` key; leave it out; seat is `gatto` |
+| seat | `~\.gatto\extensions\tasks.json`: `{ "owner": "<seat>" }`; default `gatto`; must be declared in the store's `seats.md` |
+| gatto 0.5.9 and later | reads the seat from the companion file; gatto.json's extensions key refuses at load. 0.5.8 and earlier read the key, and this tasks.csx does not load there |
 | `task_write` add | runs one `git log` in the store's `tasks\` folder, so a deleted id is never reused |
 | read class | requested in the script; inert until the file is vetted |
 

@@ -15,14 +15,14 @@
     {
       "name": "web_search",
       "file": "web_search.csx",
-      "version": 2,
+      "version": 3,
       "description": "Searches the web and fetches pages as readable text. Providers are configured in gatto.json.",
       "tools": [
         "web_search",
         "web_fetch"
       ],
-      "sha256": "6a80e1c43e24a6d660dde9fbe040bf5cbd07a805dbbae50943f27a16d6d7a516",
-      "bytes": 11835
+      "sha256": "6ac34e291304451c3985e35920c9cd7c4e4154d90dabc1aeab9268eedf893ff0",
+      "bytes": 11837
     },
     {
       "name": "undo",
